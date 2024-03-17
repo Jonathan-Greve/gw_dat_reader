@@ -135,15 +135,15 @@ jobs:
           targetName=$(grep 'target' xmake.lua | cut -d'"' -f 2)
           echo "::set-output name=target_name::$targetName"
 
-      - name: Download x86_64 artifact
+      - name: Download 64-bit artifact
         uses: actions/download-artifact@v2
         with:
           name: executable-x86_64
 
-      - name: Download x86 artifact
+      - name: Download 32-bit artifact
         uses: actions/download-artifact@v2
         with:
-          name: executable-x86
+          name: executable-i386
 
       - name: Display structure of downloaded files
         run: ls -R
