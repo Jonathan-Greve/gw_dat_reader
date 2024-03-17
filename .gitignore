@@ -2,6 +2,12 @@
 .xmake/
 build/
 
+# Visual Studio Code
+.vscode/
+
+# Visual Studio Project (can be generated using: xmake project -k vsxmake2022)
+vsxmake2022/
+
 # MacOS Cache
 .DS_Store
 

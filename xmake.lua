@@ -1,8 +1,32 @@
 add_rules("mode.debug", "mode.release")
 
+set_languages("c++20")
+set_optimize("fastest")
+set_warnings("all", "error")
+
+-- Packages
+
+-- Function to add platform-specific flags
+function add_platform_specific_flags()
+    if is_plat("windows") then
+        add_cxxflags("/EHsc")
+        add_cxxflags("-D_WIN32_WINNT=0x0601")
+    else
+        -- Add flags for e.g. linux here
+    end
+end
+
+add_requires("boost")
+add_requires("flatbuffers")
+
 target("gw_dat_reader")
     set_kind("binary")
     add_files("src/*.cpp")
+    add_packages("boost")
+    add_packages("flatbuffers")
+
+    add_platform_specific_flags()
+target_end()
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
