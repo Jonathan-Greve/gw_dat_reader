@@ -159,4 +159,4 @@ jobs:
           body_path: CHANGELOG.md
           files: |
             ${{ steps.get_target_name.outputs.target_name }}_x86_64
-            ${{ steps.get_target_name.outputs.target_name }}_x86
+            ${{ steps.get_target_name.outputs.target_name }}_i386
