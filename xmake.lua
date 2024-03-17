@@ -1,3 +1,6 @@
+set_project("Guild Wars DAT Reader")
+set_version("0.0.0")
+
 add_rules("mode.debug", "mode.release")
 
 set_languages("c++20")

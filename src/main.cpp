@@ -1,11 +1,9 @@
-#include <boost/asio.hpp>
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/statechart/state_machine.hpp>
 #include <boost/statechart/simple_state.hpp>
 #include <boost/statechart/transition.hpp>
 #include <iostream>
 
-using namespace boost::asio;
 using namespace boost::interprocess;
 namespace sc = boost::statechart;
 
@@ -63,7 +61,6 @@ struct Processing : sc::simple_state<Processing, ServerStateMachine> {
 
 int main() {
     BOOST_TRY {
-        io_context io_context;
         message_queue::remove("request_queue");
         message_queue::remove("response_queue");
         message_queue request_queue(create_only, "request_queue", 100, 1024);
