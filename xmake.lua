@@ -41,9 +41,7 @@ end
 
 before_build(function (target)
     local flatc_cmd = get_flatc_cmd(target)
-    
-    print("Running flatc command: " .. flatc_cmd, " ")
-    
+    --print("Running flatc command: " .. flatc_cmd, " ")
     os.run(flatc_cmd)
 end)
 
@@ -53,3 +51,21 @@ target("gw_dat_reader")
     add_packages("flatbuffers")
     add_platform_specific_flags()
 target_end()
+
+
+-- Testing setup
+add_requires("gtest", {configs = {main = false, gmock = true}})
+add_requires("spdlog")
+add_requires("flatbuffers")
+
+-- Iterate over test files and create test targets
+for _, file in ipairs(os.files("tests/test_*.cpp")) do
+    local name = path.basename(file)
+    target(name)
+        set_kind("binary")
+        add_packages("gtest", "spdlog", "flatbuffers")
+        set_default(false)
+        add_files(file)
+        add_tests("default")
+        add_platform_specific_flags()
+end
