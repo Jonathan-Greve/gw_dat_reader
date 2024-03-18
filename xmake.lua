@@ -17,6 +17,7 @@ function add_platform_specific_flags()
     end
 end
 
+add_requires("grpc")
 add_requires("flatbuffers")
 if is_cross() then -- requires xmake 2.8.8
     add_requires("flatbuffers~host", { host = true })
@@ -24,9 +25,15 @@ end
 
 target("gw_dat_reader")
     set_kind("binary")
-    add_files("src/*.cpp")
     add_packages("flatbuffers")
+    add_packages("grpc")
+    
     add_platform_specific_flags()
+
+    add_files("src/*.cpp")
+    add_files("flatbuffers/output/*.cc")
+
+    add_includedirs("flatbuffers/output")
 target_end()
 
 
