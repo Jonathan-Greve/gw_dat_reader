@@ -8,10 +8,10 @@ int main() {
     flatbuffers::FlatBufferBuilder builder;
 
     // Create a GWDatfilename
-    auto filename = GWDat::CreateGWDatfilename(builder, 1, 2);
+    const auto filename = GWDat::GWDatfilename(1, 2);
 
     // Create a GWDatTerrain
-    auto terrain = GWDat::CreateGWDatTerrain(builder, 123, filename, 456);
+    auto terrain = GWDat::CreateGWDatTerrain(builder, 123, &filename, 456);
 
     // Create a TerrainReply
     auto reply = GWDat::CreateTerrainReply(builder, terrain);
@@ -24,7 +24,7 @@ int main() {
     int size = builder.GetSize();
 
     // Parse the buffer
-    auto parsed_reply = GWDat::GetTerrainReply(buf);
+    auto parsed_reply = flatbuffers::GetRoot<GWDat::TerrainReply>(buf);
 
     // Print the parsed data
     std::cout << "file_id: " << parsed_reply->gw_dat_terrain()->file_id() << std::endl;
