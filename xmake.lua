@@ -44,12 +44,6 @@ for _, file in ipairs(os.files("tests/test_*.cpp")) do
         add_platform_specific_flags()
 end
 
-before_build(function (target)
-    local flatc_cmd = get_flatc_cmd(target)
-    --print("Running flatc command: " .. flatc_cmd, " ")
-    os.run(flatc_cmd)
-end)
-
 -- Run flatc command to generate C++ code from .fbs files
 local function get_flatc_cmd(target)
     local flatbuffers_installdir = target:pkg("flatbuffers"):installdir()
@@ -69,3 +63,9 @@ local function get_flatc_cmd(target)
     -- Return as a string
     return table.concat(flatc_cmd, " ")
 end
+
+before_build(function (target)
+    local flatc_cmd = get_flatc_cmd(target)
+    --print("Running flatc command: " .. flatc_cmd, " ")
+    os.run(flatc_cmd)
+end)
