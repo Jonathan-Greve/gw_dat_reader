@@ -1,0 +1,21 @@
+include "gwdat_filename.fbs";
+
+namespace GWDat;
+
+table GWDatTerrain {
+    file_id: uint32; // The file id of the map file containing the terrain data.
+    gwdat_filename: GWDatfilename; // The filename of the map file containing the terrain data.
+    file_size: uint32; // The size of the map file containing the terrain data.
+}
+
+table TerrainReply {
+    gw_dat_terrain:GWDatTerrain;
+}
+ 
+table TerrainRequest {
+    file_id:uint32;
+}
+
+rpc_service TerrainService {
+    GetTerrain(TerrainRequest):TerrainReply;
+}

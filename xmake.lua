@@ -2,13 +2,11 @@ set_project("Guild Wars DAT Reader")
 set_version("0.0.0")
 
 add_rules("mode.debug", "mode.release")
-
 set_languages("c++20")
 set_optimize("fastest")
 set_warnings("all", "error")
 
 -- Packages
-
 -- Function to add platform-specific flags
 function add_platform_specific_flags()
     if is_plat("windows") then
@@ -19,84 +17,39 @@ function add_platform_specific_flags()
     end
 end
 
-add_requires("boost")
 add_requires("flatbuffers")
+
+-- Run flatc command to generate C++ code from .fbs files
+local function get_flatc_cmd(target)
+    local flatbuffers_installdir = target:pkg("flatbuffers"):installdir()
+    local fbs_dir = path.join(os.scriptdir(), "flatbuffers", "schemes")
+    local fbs_files = os.files(path.join(fbs_dir, "*.fbs"))
+    
+    local flatc_exe = is_plat("windows") and "flatc.exe" or "flatc"
+    local flatc_path = path.join(flatbuffers_installdir, "bin", flatc_exe)
+    
+    local output_dir = path.join(os.scriptdir(), "flatbuffers", "output")
+    
+    local flatc_cmd = { flatc_path, "--cpp", "--grpc", "-o", output_dir }
+    for _, fbs_file in ipairs(fbs_files) do
+        table.insert(flatc_cmd, fbs_file)
+    end
+    
+    -- Return as a string
+    return table.concat(flatc_cmd, " ")
+end
+
+after_load(function (target)
+    local flatc_cmd = get_flatc_cmd(target)
+    
+    print("Running flatc command: " .. flatc_cmd, " ")
+    
+    os.run(flatc_cmd)
+end)
 
 target("gw_dat_reader")
     set_kind("binary")
     add_files("src/*.cpp")
-    add_packages("boost")
     add_packages("flatbuffers")
-
     add_platform_specific_flags()
 target_end()
-
---
--- If you want to known more usage about xmake, please see https://xmake.io
---
--- ## FAQ
---
--- You can enter the project directory firstly before building project.
---
---   $ cd projectdir
---
--- 1. How to build project?
---
---   $ xmake
---
--- 2. How to configure project?
---
---   $ xmake f -p [macosx|linux|iphoneos ..] -a [x86_64|i386|arm64 ..] -m [debug|release]
---
--- 3. Where is the build output directory?
---
---   The default output directory is `./build` and you can configure the output directory.
---
---   $ xmake f -o outputdir
---   $ xmake
---
--- 4. How to run and debug target after building project?
---
---   $ xmake run [targetname]
---   $ xmake run -d [targetname]
---
--- 5. How to install target to the system directory or other output directory?
---
---   $ xmake install
---   $ xmake install -o installdir
---
--- 6. Add some frequently-used compilation flags in xmake.lua
---
--- @code
---    -- add debug and release modes
---    add_rules("mode.debug", "mode.release")
---
---    -- add macro definition
---    add_defines("NDEBUG", "_GNU_SOURCE=1")
---
---    -- set warning all as error
---    set_warnings("all", "error")
---
---    -- set language: c99, c++11
---    set_languages("c99", "c++11")
---
---    -- set optimization: none, faster, fastest, smallest
---    set_optimize("fastest")
---
---    -- add include search directories
---    add_includedirs("/usr/include", "/usr/local/include")
---
---    -- add link libraries and search directories
---    add_links("tbox")
---    add_linkdirs("/usr/local/lib", "/usr/lib")
---
---    -- add system link libraries
---    add_syslinks("z", "pthread")
---
---    -- add compilation and link flags
---    add_cxflags("-stdnolib", "-fno-strict-aliasing")
---    add_ldflags("-L/usr/local/lib", "-lpthread", {force = true})
---
--- @endcode
---
-
