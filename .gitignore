@@ -8,6 +8,9 @@ build/
 # Visual Studio Project (can be generated using: xmake project -k vsxmake2022)
 vsxmake2022/
 
+# Flatbuffers generated files
+flatbuffers/output/
+
 # MacOS Cache
 .DS_Store
 

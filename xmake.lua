@@ -39,7 +39,7 @@ local function get_flatc_cmd(target)
     return table.concat(flatc_cmd, " ")
 end
 
-after_load(function (target)
+before_build(function (target)
     local flatc_cmd = get_flatc_cmd(target)
     
     print("Running flatc command: " .. flatc_cmd, " ")
