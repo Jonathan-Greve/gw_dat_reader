@@ -119,7 +119,7 @@ jobs:
         - name: Get target name
           id: get_target_name
           run: |
-            targetName=$(grep 'target' xmake.lua | cut -d'"' -f 2)
+            targetName="gw_dat_reader"
             echo "::set-output name=target_name::$targetName"
           
         - name: Download x64 artifact
