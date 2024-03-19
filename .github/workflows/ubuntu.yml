@@ -37,8 +37,7 @@ jobs:
     
       - name: Install xmake
         run: |
-          curl -fsSL https://xmake.io/shget.text | bash -s v2.8.6 
-          echo "/home/runner/.local/bin" >> $GITHUB_PATH
+          curl -fsSL https://xmake.io/shget.text | bash
     
       - name: Install latest GCC
         run: |
