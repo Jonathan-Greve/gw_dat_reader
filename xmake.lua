@@ -46,7 +46,7 @@ before_build(function (target)
     os.run(flatc_cmd)
 end)
 
-add_requires("grpc")
+add_requires("vcpkg::grpc")
 add_requires("flatbuffers")
 if is_cross() then -- requires xmake 2.8.8
     add_requires("flatbuffers~host", { host = true })
