@@ -15,8 +15,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2022]
-        arch: [x64, x86]
+        os: [windows-latest]
+        arch: [x86, x64]
 
     runs-on: ${{ matrix.os }}
 
@@ -51,7 +51,7 @@ jobs:
         
       - name: Build
         run: |
-          xmake f -v -a ${{ matrix.arch }} -y
+          xmake f -a ${{ matrix.arch }} -vy
           xmake -vD -y
 
       - name: Run tests
@@ -61,7 +61,7 @@ jobs:
       - name: Get target name
         id: get_target_name
         run: |
-          $targetName = (Select-String -Path xmake.lua -Pattern 'target\("(.+)"\)' | ForEach-Object { $_.Matches.Groups[1].Value })
+          targetName="gw_dat_reader"
           echo "::set-output name=target_name::$targetName"
 
       - name: Rename exe file
