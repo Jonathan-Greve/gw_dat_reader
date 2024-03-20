@@ -29,11 +29,11 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      - name: Setup VCPKG
-        run: |
-          git clone https://github.com/microsoft/vcpkg
-          .\vcpkg\bootstrap-vcpkg.bat
-          .\vcpkg\vcpkg integrate install
+      # - name: Setup VCPKG
+      #   run: |
+      #     git clone https://github.com/microsoft/vcpkg
+      #     .\vcpkg\bootstrap-vcpkg.bat
+      #     .\vcpkg\vcpkg integrate install
 
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
@@ -67,9 +67,10 @@ jobs:
 
       - name: Get target name
         id: get_target_name
+        shell: pwsh
         run: |
-          targetName="gw_dat_reader"
-          echo "::set-output name=target_name::$targetName"
+          $targetName = Get-Content xmake.lua | Select-String -Pattern 'target\("?\K[^"]+' -List | Select-Object -First 1 -ExpandProperty Matches | ForEach-Object { $_.Value }
+          "target_name=$targetName" >> $env:GITHUB_OUTPUT
 
       - name: Rename exe file
         run: mv "build/windows/${{ matrix.arch }}/release/${{ steps.get_target_name.outputs.target_name }}.exe" "build/windows/${{ matrix.arch }}/release/${{ steps.get_target_name.outputs.target_name }}_${{ matrix.arch }}.exe"
@@ -125,9 +126,10 @@ jobs:
           
         - name: Get target name
           id: get_target_name
+          shell: pwsh
           run: |
-            targetName="gw_dat_reader"
-            echo "::set-output name=target_name::$targetName"
+            $targetName = Get-Content xmake.lua | Select-String -Pattern 'target\("?\K[^"]+' -List | Select-Object -First 1 -ExpandProperty Matches | ForEach-Object { $_.Value }
+            "target_name=$targetName" >> $env:GITHUB_OUTPUT
           
         - name: Download x64 artifact
           uses: actions/download-artifact@v2

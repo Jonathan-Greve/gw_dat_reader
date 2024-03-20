@@ -1,36 +1,37 @@
 #include <iostream>
+#include <format>
 #include <flatbuffers/flatbuffers.h>
-#include <gwdat_filename_generated.h>
-#include <gwdat_terrain_generated.h>
+#include "gwdat_filename_generated.h"
+#include "gwdat_terrain_generated.h"
 
 int main() {
     // Create a FlatBufferBuilder
     flatbuffers::FlatBufferBuilder builder;
 
     // Create a GWDatfilename
-    const auto filename = GWDat::GWDatfilename(1, 2);
+    auto filename = GWDat::GWDatfilename(1, 2);
 
     // Create a GWDatTerrain
-    auto terrain = GWDat::CreateGWDatTerrain(builder, 123, &filename, 456);
-
-    // Create a TerrainReply
-    auto reply = GWDat::CreateTerrainReply(builder, terrain);
+    uint32_t file_id = 123;
+    uint32_t file_size = 1024;
+    auto terrain = GWDat::CreateGWDatTerrain(builder, file_id, &filename, file_size);
 
     // Finish the buffer
-    builder.Finish(reply);
+    builder.Finish(terrain);
 
     // Get the buffer pointer and size
-    uint8_t* buf = builder.GetBufferPointer();
+    const uint8_t* buf = builder.GetBufferPointer();
     int size = builder.GetSize();
 
-    // Parse the buffer
-    auto parsed_reply = flatbuffers::GetRoot<GWDat::TerrainReply>(buf);
-
-    // Print the parsed data
-    std::cout << "file_id: " << parsed_reply->gw_dat_terrain()->file_id() << std::endl;
-    std::cout << "id0: " << parsed_reply->gw_dat_terrain()->gwdat_filename()->id0() << std::endl;
-    std::cout << "id1: " << parsed_reply->gw_dat_terrain()->gwdat_filename()->id1() << std::endl;
-    std::cout << "file_size: " << parsed_reply->gw_dat_terrain()->file_size() << std::endl;
+    // Print the fields using std::format
+    std::cout << std::format("GWDatTerrain fields:\n");
+    std::cout << std::format("  file_id: {}\n", file_id);
+    std::cout << std::format("  gwdat_filename: {{\n");
+    std::cout << std::format("    id0: {}\n", flatbuffers::GetRoot<GWDat::GWDatTerrain>(buf)->gwdat_filename()->id0());
+    std::cout << std::format("    id1: {}\n", flatbuffers::GetRoot<GWDat::GWDatTerrain>(buf)->gwdat_filename()->id1());
+    std::cout << std::format("  }}\n");
+    std::cout << std::format("  file_size: {}\n", file_size);
+    std::cout << std::format("Buffer size: {} bytes\n", size);
 
     return 0;
 }

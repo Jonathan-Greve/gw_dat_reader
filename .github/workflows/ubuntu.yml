@@ -30,10 +30,10 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      - name: Setup VCPKG
-        run: |
-          git clone https://github.com/microsoft/vcpkg
-          ./vcpkg/bootstrap-vcpkg.sh
+      # - name: Setup VCPKG
+      #   run: |
+      #     git clone https://github.com/microsoft/vcpkg
+      #     ./vcpkg/bootstrap-vcpkg.sh
     
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -77,9 +77,10 @@ jobs:
     
       - name: Get target name
         id: get_target_name
+        shell: bash
         run: |
-          targetName="gw_dat_reader"
-          echo "::set-output name=target_name::$targetName"
+          targetName=$(grep -oP 'target\("?\K[^"]+' xmake.lua | head -n 1)
+          echo "target_name=$targetName" >> $GITHUB_OUTPUT
     
       - name: Rename executable
         run: mv "build/linux/${{ matrix.arch }}/release/${{ steps.get_target_name.outputs.target_name }}" "build/linux/${{ matrix.arch }}/release/${{ steps.get_target_name.outputs.target_name }}_${{ matrix.arch }}"
@@ -135,9 +136,10 @@ jobs:
 
       - name: Get target name
         id: get_target_name
+        shell: bash
         run: |
-          targetName=gw_dat_reader
-          echo "::set-output name=target_name::$targetName"
+          targetName=$(grep -oP 'target\("?\K[^"]+' xmake.lua | head -n 1)
+          echo "target_name=$targetName" >> $GITHUB_OUTPUT
 
       - name: Download 64-bit artifact
         uses: actions/download-artifact@v2
